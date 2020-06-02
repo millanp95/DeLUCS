@@ -14,6 +14,10 @@ For each users in our account there are differnt file systems that should be use
 
 The following table is taken from the Compute Canada documentation and show all the policies for each file system:
 
+* **HOME**: While your home directory may seem like the logical place to store all your files and do all your work, in general this isn't the case - your home normally has a relatively small quota and doesn't have especially good performance for the writing and reading of large amounts of data. The most logical use of your home directory is typically source code, small parameter files and job submission scripts.
+* **PROJECT**: The project space has a significantly larger quota and is well-adapted to sharing data among members of a research group since it, unlike the home or scratch, is linked to a professor's account rather than an individual user.
+* **SCRATCH**: For intensive read/write operations, scratch is the best choice. Remember however that important files must be copied off scratch since they are not backed up there, and older files are subject to purging. The scratch storage should therefore only be used for transient files.
+
 For transfering local files to the cluster you can use ```scp``` with the same credentials you used for logging into the system: 
 
 ```
