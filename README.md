@@ -26,6 +26,9 @@ For transfering local files to the cluster you can use ```scp``` with the same c
 Compute Canada uses SLURM https://slurm.schedmd.com/documentation.html for managing jobs and allocating resources within the different clusters. To submit a job you will need to create a sbatch script with all the requirements that area neccessary for running your code. You can also run your code inside an interactive node, this is recommended before submitting bigger jobs. 
 
 
+$Note$:Submitting jobs from directories residing in /home is not permitted, transfer the files either to your /project or /scratch directory and submit the job from there.
+
+
 Creating an interactive job for testing the code after submitting the cod via slurm. 
   salloc --account=def-khill22 --gres=gpu:1 --cpus-per-task=4 --mem=32000M --time=0-00:25:00
   ```
