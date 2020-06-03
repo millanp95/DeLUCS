@@ -10,7 +10,7 @@ ssh pmillana@graham.computecanada.ca
 ```
 ## Different File Systems: 
 Once you have accessed the cluster trough a login node (Do not run anything on this nodes), you will see that all our folders are under the account ```def-khill22```, this is the account name of our group and should be used for every job submition. 
-For each users in our account there are differnt file systems that should be used for different purposes: 
+For each user in our account there are differnt file systems that should be used for different purposes: 
 
 * **HOME**: While your home directory may seem like the logical place to store all your files and do all your work, in general this isn't the case - your home normally has a relatively small quota and doesn't have especially good performance for the writing and reading of large amounts of data. The most logical use of your home directory is typically source code, small parameter files and job submission scripts.
 * **PROJECT**: The project space has a significantly larger quota and is well-adapted to sharing data among members of a research group since it, unlike the home or scratch, is linked to a professor's account rather than an individual user.
@@ -59,7 +59,7 @@ You can also run your code inside an interactive node, this is recommended befor
 
 module load python/3.6 cuda cudnn
 
-SOURCEDIR=~/src   #I copied the files in this directory in my home directory
+SOURCEDIR=~/src   #I copied the files in this directory inside my home directory
 
 # Prepare virtualenv
 virtualenv --no-download $SLURM_TMPDIR/env
@@ -68,7 +68,7 @@ pip install --no-index -r $SOURCEDIR/requirements.txt
 
 # Start training
 python TrainCluster.py --data_path ~/scratch/data/train.p --load_data True
-# --data_path: Path of your training data. 
+# --data_path: Path of the decompressed training data.
 # --load_features: True if the training features are precomputed.
  ```
  For monitoring the status of your job you can run: 
