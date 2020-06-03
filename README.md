@@ -49,7 +49,7 @@ You can also run your code inside an interactive node, this is recommended befor
 
 module load python/3.6 cuda cudnn
 
-SOURCEDIR=~/src
+SOURCEDIR=~/src   #I copied the files in this directory in my home directory
 
 # Prepare virtualenv
 virtualenv --no-download $SLURM_TMPDIR/env
@@ -57,6 +57,15 @@ source $SLURM_TMPDIR/env/bin/activate
 pip install --no-index -r $SOURCEDIR/requirements.txt
 
 # Start training
-python $SOURCEDIR/TrainCluster.py
+python TrainCluster.py --data_path ~/scratch/data/train.p --load_data True
+# --data_path: Path of your training data. 
+# --load_features: True if the training features are precomputed.
  ```
+ For monitoring the status of your job you can run: 
  
+```
+squeue --account=def-khill22  
+```
+
+A log file with the output of your job will be created after it finishes in the same directory of your sbash sript. 
+
