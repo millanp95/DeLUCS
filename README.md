@@ -49,7 +49,7 @@ You can also run your code inside an interactive node, this is recommended befor
  ``` (bash)
   salloc --account=def-khill22 --gres=gpu:1 --cpus-per-task=4 --mem=32000M --time=0-00:25:00
  ```
- The following is an example of the sbatch script that was used in our case: 
+ You can run separately the commands in the following sbatch script inside your interactive node with few iterations to check that the code doesn't have any error. This is an example of the  script that was used in our case: 
  ```
 #!/bin/bash
 #SBATCH --gres=gpu:1       # Request GPU "generic resources"
