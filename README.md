@@ -17,7 +17,7 @@ For each users in our account there are differnt file systems that should be use
 * **SCRATCH**: For intensive read/write operations, scratch is the best choice. Remember however that important files must be copied off scratch since they are not backed up there, and older files are subject to purging. The scratch storage should therefore only be used for transient files.
 
 <p align="center">
-  <img src ="Images\1.jpg" alt="drawing" width="250"/>
+  <img src ="Images\Screenshot from 2020-06-02 19-41-06.png" alt="drawing" width="250"/>
   <img src ="Pictures\2.jpg" alt="drawing" width="200"/>
 </p>
 
@@ -25,7 +25,7 @@ For each users in our account there are differnt file systems that should be use
 The following table is taken from the Compute Canada documentation and show all the policies for each file system:
 
 <p align="center">
-  <img src ="Images\1.jpg" alt="drawing" width="250"/>
+  <img src ="Images\Screenshot from 2020-06-02 19-41-15.png" alt="drawing" width="250"/>
 </p>
 
 
