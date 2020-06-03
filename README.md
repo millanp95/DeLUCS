@@ -16,7 +16,18 @@ For each users in our account there are differnt file systems that should be use
 * **PROJECT**: The project space has a significantly larger quota and is well-adapted to sharing data among members of a research group since it, unlike the home or scratch, is linked to a professor's account rather than an individual user.
 * **SCRATCH**: For intensive read/write operations, scratch is the best choice. Remember however that important files must be copied off scratch since they are not backed up there, and older files are subject to purging. The scratch storage should therefore only be used for transient files.
 
+<p align="center">
+  <img src ="Images\1.jpg" alt="drawing" width="250"/>
+  <img src ="Pictures\2.jpg" alt="drawing" width="200"/>
+</p>
+
+
 The following table is taken from the Compute Canada documentation and show all the policies for each file system:
+
+<p align="center">
+  <img src ="Images\1.jpg" alt="drawing" width="250"/>
+</p>
+
 
 
 
