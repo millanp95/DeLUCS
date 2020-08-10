@@ -1,15 +1,16 @@
 # Dependencies
-
 import os
 import torch
 import pickle
 import numpy as np
 import argparse
+import random
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from helpers import cluster_acc
 from PytorchUtils import Seq_data, Net_linear, IID_loss
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
 
 
 def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.0001, k=6):
@@ -23,8 +24,7 @@ def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.00
     # -------------------Training the network-------------------------------------
 
     optimizer = optim.Adam(net.parameters(), lr=_lr)
-    training_losses = []
-    training_acc = []
+    max_acc = 0.0
 
     for epoch in range(epochs):  # This is the number of times we want to iterate over the full dataset
         running_loss = 0.0
@@ -45,11 +45,6 @@ def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.00
             loss.backward()
             optimizer.step()
 
-            running_loss += loss
-
-        running_loss /= i_batch
-        training_losses.append(running_loss)
-
         # Compute the ACC and save the best assignment.
         net.eval()
         predicted = []
@@ -61,7 +56,7 @@ def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.00
             sample = torch.from_numpy(x_test[i])
             label = y_test[i]
 
-            sample = sample.view(1, 1, 2**k, 2**k).type(dtype)
+            sample = sample.view(1, 1, 2 ** k, 2 ** k).type(dtype)
             output = net(sample)
 
             top_n, top_i = output.topk(1)  # Get Label from prediction.
@@ -73,23 +68,11 @@ def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.00
         y_true = np.array(y_true)
 
         acc = cluster_acc(y_true, predicted)
-        training_acc.append(acc)
 
-        if acc >= max(training_acc):
-            model_path = os.path.join(output_dir, "best_net.pytorch")
-            torch.save(net.state_dict(), model_path)
+        if acc >= max_acc:
+            max_acc = acc
 
-        if epoch % 25 == 0:
-            print("Epoch: %s   Loss: %s --  Accuracy: %s" % (epoch, running_loss, acc))
-
-        print('-----------Finished Training-------------')
-
-    plt.plot(training_losses)
-    plt.xlabel('epoch')
-    plt.ylabel('Loss')
-    plt.title('Training Process')
-    figure_path = os.path.join(output_dir, 'training process.png')
-    plt.savefig(figure_path)
+    return max_acc
 
 
 def main():
@@ -97,8 +80,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', action='store', type=str, default='None')
     parser.add_argument('--out_dir', action='store', type=str, default='False')
+    parser.add_argument('--modify', action='store', type=str, default='noise')  # [noise,mutation]
     args = parser.parse_args()
 
+    print(args.data_dir, args.modify)
     torch.manual_seed(0)
 
     # Set value of k
@@ -106,8 +91,14 @@ def main():
 
     # Load Training Data.
     data_dir = args.data_dir
-    filename = os.path.join(data_dir, 'testing_data')
-    TrainDataFile = os.path.join(data_dir, data_dir + '.p')
+    if args.modify == 'mutation':
+        filename = os.path.join(data_dir, 'testing_data.p')
+    elif args.modify == 'noise':
+        filename = os.path.join(data_dir, 'noise_testing_data.p')
+    else:
+        print('Unsupported modification method')
+
+    TrainDataFile = os.path.join(data_dir, 'Vertebrata_Balanced.p')
 
     data = pickle.load(open(TrainDataFile, "rb"))
     unique_labels = sorted(set(map(lambda x: x[0], data)))
@@ -116,14 +107,39 @@ def main():
     x_train, x_test, y_test = pickle.load(open(filename, 'rb'))
     print("The size of the training array is:", x_train.shape)
 
+    # scaling the data.
+    scaler = StandardScaler()
+    scaler.fit(x_test)
+
+    x_train_1 = scaler.transform(x_train[:, 0, :])
+    x_train_2 = scaler.transform(x_train[:, 1, :])
+    x_test = scaler.transform(x_test)
+
+    x_train[:, 0, :] = x_train_1
+    x_train[:, 1, :] = x_train_2
+
     # creating the dataset.
     training_set = Seq_data(x_train)
 
-    # Building the network.
-    net = Net_linear(4 ** k, numClasses)
-    net = net.cuda()
+    LAMBDA = []
+    _LR = []
+    accuracy = []
+    LR = np.logspace(-6, -2, 1000)
 
-    eval_training(net, training_set, x_test, y_test, args.out_dir, l=1.0, _lr=0.0001, k=6)
+    for n in range(30):
+
+        l = random.uniform(1, 3)
+        _lr = np.random.choice(LR)
+        net = Net_linear(4 ** k, numClasses)
+        net.cuda()
+
+        acc = eval_training(net, training_set, x_test, y_test, args.out_dir, l=l, _lr=_lr, k=6)
+
+        accuracy.append(acc)
+        LAMBDA.append(l)
+        _LR.append(_lr)
+
+        print(n, l,_lr, acc)
 
 if __name__ == '__main__':
     main()
