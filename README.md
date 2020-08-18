@@ -71,6 +71,10 @@ python TrainCluster.py --data_path ~/scratch/data/train.p --load_data True
 # --data_path: Path of the decompressed training data.
 # --load_features: True if the training features are precomputed.
  ```
+ For running the script you run: 
+ ```
+ sbatch --account=def-khill22 script.sh
+ ```
  For monitoring the status of your job you can run: 
  
 ```
