@@ -1,15 +1,22 @@
 # Dependencies
-
 import os
 import torch
 import pickle
 import numpy as np
 import argparse
 import torch.optim as optim
+import torch.nn as nn
 from torch.utils.data import DataLoader
 from helpers import cluster_acc
 from PytorchUtils import Seq_data, Net_linear, IID_loss
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+
+def weights_init(m):
+    if isinstance(m, nn.Linear):
+        torch.nn.init.kaiming_normal_(m.weight)
+        torch.nn.init.zeros_(m.bias)
+
 
 
 def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.0001, k=6):
@@ -79,8 +86,12 @@ def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.00
             model_path = os.path.join(output_dir, "best_net.pytorch")
             torch.save(net.state_dict(), model_path)
 
-        if epoch % 25 == 0:
-            print("Epoch: %s   Loss: %s --  Accuracy: %s" % (epoch, running_loss, acc))
+        print("Epoch: %s   Loss: %s --  Accuracy: %s" % (epoch, running_loss, acc))
+
+        if epoch % 50 == 0 and epoch != 0:
+            with torch.no_grad():
+                for param in net.parameters():
+                    param.add_(torch.randn(param.size()).type(dtype) * 0.09)
 
         print('-----------Finished Training-------------')
 
@@ -116,11 +127,23 @@ def main():
     x_train, x_test, y_test = pickle.load(open(filename, 'rb'))
     print("The size of the training array is:", x_train.shape)
 
+    # scaling the data.
+    scaler = StandardScaler()
+    scaler.fit(x_test)
+
+    x_train_1 = scaler.transform(x_train[:, 0, :])
+    x_train_2 = scaler.transform(x_train[:, 1, :])
+    x_test = scaler.transform(x_test)
+
+    x_train[:, 0, :] = x_train_1
+    x_train[:, 1, :] = x_train_2
+
     # creating the dataset.
     training_set = Seq_data(x_train)
 
     # Building the network.
     net = Net_linear(4 ** k, numClasses)
+    net.apply(weights_init)
     net = net.cuda()
 
     eval_training(net, training_set, x_test, y_test, args.out_dir, l=1.0, _lr=0.0001, k=6)

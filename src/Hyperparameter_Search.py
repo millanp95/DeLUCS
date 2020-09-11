@@ -6,17 +6,24 @@ import numpy as np
 import argparse
 import random
 import torch.optim as optim
+import torch.nn as nn
 from torch.utils.data import DataLoader
-from helpers import cluster_acc
+from helpers import cluster_acc, getStats
 from PytorchUtils import Seq_data, Net_linear, IID_loss
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 
 
-def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.0001, k=6):
+def weights_init(m):
+    if isinstance(m, nn.Linear):
+        torch.nn.init.kaiming_normal_(m.weight)
+        torch.nn.init.zeros_(m.bias)
+
+
+def eval_training(net, training_set, x_test, y_test, l=1.0, _lr=0.0001, k=6):
     # Training parameters:
-    batch_size = 64
-    epochs = 100
+    batch_size = 512
+    epochs = 150
     dtype = torch.cuda.FloatTensor
 
     dataloader = DataLoader(training_set, batch_size=batch_size, shuffle=True, num_workers=4)
@@ -31,8 +38,8 @@ def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.00
         net.train()
 
         for i_batch, sample_batched in enumerate(dataloader):
-            sample = sample_batched['true'].view(-1, 1, 2**k, 2**k).type(dtype)
-            modified_sample = sample_batched['modified'].view(-1, 1, 2**k, 2**k).type(dtype)
+            sample = sample_batched['true'].view(-1, 1, 2 ** k, 2 ** k).type(dtype)
+            modified_sample = sample_batched['modified'].view(-1, 1, 2 ** k, 2 ** k).type(dtype)
 
             # zero the gradients
             optimizer.zero_grad()
@@ -69,6 +76,11 @@ def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.00
 
         acc = cluster_acc(y_true, predicted)
 
+        if epoch % 50 == 0 and epoch != 0:
+            with torch.no_grad():
+                for param in net.parameters():
+                    param.add_(torch.randn(param.size()).type(dtype) * 0.09)
+
         if acc >= max_acc:
             max_acc = acc
 
@@ -76,33 +88,24 @@ def eval_training(net, training_set, x_test, y_test, output_dir, l=1.0, _lr=0.00
 
 
 def main():
-
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', action='store', type=str, default='None')
-    parser.add_argument('--out_dir', action='store', type=str, default='False')
-    parser.add_argument('--modify', action='store', type=str, default='noise')  # [noise,mutation]
+    parser.add_argument('--data', action='store', type=str, default='None')
+    parser.add_argument('--pairs', action='store', type=str, default='None')  # [noise,mutation]
     args = parser.parse_args()
 
-    print(args.data_dir, args.modify)
-    torch.manual_seed(0)
+    print(args.data)
 
     # Set value of k
     k = 6
 
     # Load Training Data.
-    data_dir = args.data_dir
-    if args.modify == 'mutation':
-        filename = os.path.join(data_dir, 'testing_data.p')
-    elif args.modify == 'noise':
-        filename = os.path.join(data_dir, 'noise_testing_data.p')
-    else:
-        print('Unsupported modification method')
-
-    TrainDataFile = os.path.join(data_dir, 'Vertebrata_Balanced.p')
+    filename = args.pairs
+    TrainDataFile = args.data
 
     data = pickle.load(open(TrainDataFile, "rb"))
     unique_labels = sorted(set(map(lambda x: x[0], data)))
     numClasses = len(unique_labels)
+    diData = getStats(data)
 
     x_train, x_test, y_test = pickle.load(open(filename, 'rb'))
     print("The size of the training array is:", x_train.shape)
@@ -131,15 +134,17 @@ def main():
         l = random.uniform(1, 3)
         _lr = np.random.choice(LR)
         net = Net_linear(4 ** k, numClasses)
+        net.apply(weights_init)
         net.cuda()
 
-        acc = eval_training(net, training_set, x_test, y_test, args.out_dir, l=l, _lr=_lr, k=6)
+        acc = eval_training(net, training_set, x_test, y_test, l=l, _lr=_lr, k=6)
 
         accuracy.append(acc)
         LAMBDA.append(l)
         _LR.append(_lr)
 
-        print(n, l,_lr, acc)
+        print(n, l, _lr, acc)
+
 
 if __name__ == '__main__':
     main()

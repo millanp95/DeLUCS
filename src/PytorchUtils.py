@@ -3,8 +3,6 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
 from torch.autograd import Variable
 
 
@@ -165,7 +163,7 @@ def EntropyLoss(x_out, x_tf_out, lamb=1.0, EPS=sys.float_info.epsilon):
     H_conditional = - p_i_j * (torch.log(p_i_j) - torch.log(p_j))
     H_conditional = H_conditional.sum()
 
-    return - H + H_conditional
+    return - lamb * H + H_conditional
 
 
 def KL_IIC(x_out, x_tf_out, p_dist, lamb=1.0, EPS=sys.float_info.epsilon):
