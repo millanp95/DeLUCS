@@ -4,28 +4,35 @@ This repository contains all the source files required to run the Deep clusterin
 
 ## Computational Pipeline: 
 
-Input: Folders with the sequences in FASTA format
 
 1. Build the dataset:
+	* Input: Folders with the sequences in FASTA format
+	* Output : file in the form (label,sequence,accession)
+
   ```
 	python build_db.py --data_path=<PATH_sequence_folder> --output=<PATH_output_file>
   ```
-Output : file in the form (label,sequence,accession)
+
 
 2. Compute the pairs.
+	* Input: file in the form (label,sequence,accession)
+	* Output : file in the form of (pairs, x_test, y_test). 
 	
   ```
 	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file>
   ```
- Output : file in the form of (pairs, x_test, y_test). 
+ 
 
 3. Train the model.
+	* Input: file in the form of (pairs, x_test, y_test). 
+	* Output : 
+		** Image with the confusion Matrix. 
+        	** File with the misclassified sequences in the form (accession, true_label, predicted_label)
 ```
 python TrainCluster.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 
 ```
-Output: Image with the confusion Matrix. 
-        File with the misclassified sequences in the form (accession, true_label, predicted_label)
+
 <!--in one of the Compute Canada clusters available for our lab.
 
 <!-- ## Accesing the resources:
