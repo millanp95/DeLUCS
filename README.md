@@ -26,8 +26,8 @@ This repository contains all the source files required to run the Deep clusterin
 3. Train the model.
 	* Input: file in the form of (pairs, x_test, y_test). 
 	* Output : 
-		** Image with the confusion Matrix. 
-        	** File with the misclassified sequences in the form (accession, true_label, predicted_label)
+		* Image with the confusion Matrix. 
+        	* File with the misclassified sequences in the form (accession, true_label, predicted_label)
 ```
 python TrainCluster.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 
