@@ -90,13 +90,10 @@ class Net_linear(nn.Module):
         self.classifier = nn.Sequential(
             nn.Linear(n_input, 512),
             nn.ReLU(),
-            nn.Dropout(p=0.25),
+            nn.Dropout(p=0.5),
             nn.Linear(512, 64),
             nn.ReLU(),
-            nn.Dropout(p=0.25),
-            # nn.Linear(256, 64),
-            # nn.ReLU(),
-            # nn.Dropout(p=0.25),
+            nn.Dropout(p=0.5),
             nn.Linear(64, n_output),  # Always check n_input here.
             nn.Softmax(dim=1)
         )
@@ -141,51 +138,3 @@ def compute_joint(x_out, x_tf_out):
     p_i_j = p_i_j / p_i_j.sum()  # normalise
 
     return p_i_j
-
-
-def EntropyLoss(x_out, x_tf_out, lamb=1.0, EPS=sys.float_info.epsilon):
-
-    # has had softmax applied
-    _, k = x_out.size()
-    p_i_j = compute_joint(x_out, x_tf_out)
-    assert (p_i_j.size() == (k, k))
-
-    p_i = p_i_j.sum(dim=1).view(k, 1).expand(k, k).clone()
-    p_j = p_i_j.sum(dim=0).view(1, k).expand(k, k).clone()  # but should be same, symmetric
-
-    # avoid NaN losses. Effect will get cancelled out by p_i_j tiny anyway
-    p_i_j[(p_i_j < EPS).data] = EPS
-    p_j[(p_j < EPS).data] = EPS
-    p_i[(p_i < EPS).data] = EPS
-
-    H = - p_i[:,0] * torch.log(p_i[:,0])
-    H = H.sum()
-    H_conditional = - p_i_j * (torch.log(p_i_j) - torch.log(p_j))
-    H_conditional = H_conditional.sum()
-
-    return - lamb * H + H_conditional
-
-
-def KL_IIC(x_out, x_tf_out, p_dist, lamb=1.0, EPS=sys.float_info.epsilon):
-
-    # has had softmax applied
-    _, k = x_out.size()
-    p_i_j = compute_joint(x_out, x_tf_out)
-    assert (p_i_j.size() == (k, k))
-
-    p_i = p_i_j.sum(dim=1).view(k, 1).expand(k, k).clone()
-    p_j = p_i_j.sum(dim=0).view(1, k).expand(k, k).clone()  # but should be same, symmetric
-
-    # avoid NaN losses. Effect will get cancelled out by p_i_j tiny anyway
-    p_i_j[(p_i_j < EPS).data] = EPS
-    p_j[(p_j < EPS).data] = EPS
-    p_i[(p_i < EPS).data] = EPS
-
-    z = p_i[:,0]
-    KL = (z * (z / p_dist).log()).sum()
-
-    H_conditional = - p_i_j * (torch.log(p_i_j) - torch.log(p_j))
-    H_conditional = H_conditional.sum()
-    # -np.log(k) + KL + lamb * H_conditional
-    return -np.log(k) + KL + lamb * H_conditional
-
