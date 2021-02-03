@@ -1,9 +1,9 @@
 # DeepCluster
 This repository contains all the source files required to run the Deep clustering algorithm for DNA sequences, as well as a detailed guide for running the code in one of the Compute Canada clusters available for our lab.
 
-## Accesing the resources:
+<> ## Accesing the resources:
 
-In our lab we have acces to three different clusters within the Compute Canada infraestructure: Cedar and Graham. We can acces the cluster via ssh using the Compute Canada credentials and the name of the cluster we want to access:
+<>In our lab we have acces to three different clusters within the Compute Canada infraestructure: Cedar and Graham. We can acces the cluster via ssh using the Compute Canada credentials and the name of the cluster we want to access:
 ```
 ssh pmillana@cedar.computecanada.ca
 ssh pmillana@graham.computecanada.ca
