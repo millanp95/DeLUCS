@@ -1,5 +1,32 @@
 # DeepCluster
-This repository contains all the source files required to run the Deep clustering algorithm for DNA sequences, as well as a detailed guide for running the code . <!--in one of the Compute Canada clusters available for our lab.
+This repository contains all the source files required to run the Deep clustering algorithm for DNA sequences, as well as a detailed guide for running the code .
+
+
+## Computational Pipeline: 
+
+Input: Folders with the sequences in FASTA format
+
+1. Build the dataset:
+  ```
+	python build_db.py --data_path=<PATH_sequence_folder> --output=<PATH_output_file>
+  ```
+Output : file in the form (label,sequence,accession)
+
+2. Compute the pairs.
+	
+  ```
+	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file>
+  ```
+ Output : file in the form of (pairs, x_test, y_test). 
+
+3. Train the model.
+```
+python TrainCluster.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
+
+```
+Output: Image with the confusion Matrix. 
+        File with the misclassified sequences in the form (accession, true_label, predicted_label)
+<!--in one of the Compute Canada clusters available for our lab.
 
 <!-- ## Accesing the resources:
 
@@ -83,31 +110,6 @@ squeue --account=def-khill22
 ```
 <!-- 
 A log file with the output of your job will be created after it finishes in the same directory of your sbash sript. 
-
-## Computational Pipeline: 
-
-Input: Folders with the sequences in FASTA format
-
-1. Build the dataset:
-  ```
-	python build_db.py --data_path=<PATH_sequence_folder> --output=<PATH_output_file>
-  ```
-Output : file in the form (label,sequence,accession)
-
-2. Compute the pairs.
-	
-  ```
-	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file>
-  ```
- Output : file in the form of (pairs, x_test, y_test). 
-
-3. Train the model.
-```
-python TrainCluster.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
-
-```
-Output: Image with the confusion Matrix. 
-        File with the misclassified sequences in the form (accession, true_label, predicted_label)
 
  
 
