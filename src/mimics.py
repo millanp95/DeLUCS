@@ -27,11 +27,13 @@ def mutate_kmers(seq, k_dict, k_count, k, positions, mutations):
     :return: Array with kmer counts of the mutated version
     """
 
-    for (i, new_bp) in zip(positions, mutations):
-        new_count = k_count.copy()
+    new_count = k_count.copy()
 
-        for j in range(1, k + 1):
-            idx = i - k + j
+    for (i, new_bp) in zip(positions, mutations):
+        max_j = min(k, len(seq)-i, i)
+        min_j = min(k, i)
+        for j in range(1, max_j + 1):
+            idx = i - min_j + j
             kmer = seq[idx: idx + k]
             new_kmer = list(kmer)
             new_kmer[-j] = new_bp
@@ -40,7 +42,7 @@ def mutate_kmers(seq, k_dict, k_count, k, positions, mutations):
             new_count[k_dict[kmer]] -= 1
             new_count[k_dict[new_kmer]] += 1
 
-        return new_count
+    return new_count
 
 
 def transition(seq, threshold):

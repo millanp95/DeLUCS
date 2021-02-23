@@ -8,7 +8,7 @@ after the accession number separated by a dot.
 :param data_path: Path of the folder with the sequences.
 :returns: None
 
-Example: python build_dp.py --dataset='Influenza' --data_path = '../data/Influenza'
+Example: python build_dp.py --data_path = '../data/Influenza'
 """
 
 import os
@@ -17,13 +17,27 @@ import pickle
 import argparse
 
 
+def replace(seq):
+    """
+    This function ignores all the symbols that are not A, C, G, T
+    in the sequence
+    :param seq: Original sequence
+    :return: Sequences with only ACGT characters.
+    """
+    newseq = []
+    accepted_bp = ['A', 'C', 'G', 'T']
+    for l in seq:
+        if l in accepted_bp:
+            newseq.append(l)
+
+    return ''.join(newseq)
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', action='store', type=str, default='None')
     parser.add_argument('--data_path', action='store', type=str, default='None')
     args = parser.parse_args()
 
-    dataset = args.dataset
     seq_dir = args.data_path
     data = []
 
@@ -38,12 +52,12 @@ def main():
             fasta = SeqIO.parse(filename, "fasta")
 
             for sequence in fasta:
-
-                accession_number = file.id.split('.')[0]
+                accession_number = sequence.id.split('.')[0]
 
                 # Get Sequence
-                seq = str(file.seq)
-                seq = seq.replace('-', '').upper()
+                seq = str(sequence.seq)
+                seq = seq.upper()
+                seq = replace(seq)
 
                 data.append((label, seq, accession_number))
 

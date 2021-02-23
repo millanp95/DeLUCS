@@ -8,10 +8,10 @@ from helpers import kmer_count
 
 def modify_mutation(train, k, output_path):
     """
-    :param train:
-    :param k:
-    :param output_path:
-    :return:
+    :param train: dataset in pickle format
+    :param k: word length
+    :param output_path: file to save the mimics.
+    :return: Pickle file with mimic sequences.
     """
 
     unique_labels = sorted(set(map(lambda x: x[0], train)))
@@ -40,17 +40,17 @@ def modify_mutation(train, k, output_path):
         test_labels.append(label)
 
         # Append all the modified pairs for training.
-        for j in range(3):
+        for j in range(1):
             indices, mutations = mimics.transition(train[i][1], 1 - 1e-4)
-            t_trans = mimics.mutate_kmers(train[i][i], kmer_dict, t, k, indices, mutations)
+            t_trans = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
             t_trans = t_trans / np.sum(t_trans)
 
             indices, mutations = mimics.transversion(train[i][1], 1 - 0.5e-4)
-            t_traver = mimics.mutate_kmers(train[i][i], kmer_dict, t, k, indices, mutations)
+            t_traver = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
             t_traver = t_traver / np.sum(t_traver)
 
             indices, mutations = mimics.transition_transversion(train[i][1], 1 - 1e-4, 1 - 0.5e-4)
-            t_mutated = mimics.mutate_kmers(train[i][i], kmer_dict, t, k, indices, mutations)
+            t_mutated = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
             t_mutated = t_mutated / np.sum(t_mutated)
 
             train_features.extend([(t_norm, t_trans), (t_norm, t_traver), (t_norm, t_mutated)])
@@ -68,10 +68,10 @@ def modify_mutation(train, k, output_path):
 
 def modify_noise(train, k, output_path):
     """
-    :param train:
-    :param k:
-    :param output_path:
-    :return:
+    :param train: dataset in pickle format
+    :param k: word length
+    :param output_path: file to save the mimics.
+    :return: Pickle file with mimic sequences.
     """
     unique_labels = sorted(set(map(lambda x: x[0], train)))
 
