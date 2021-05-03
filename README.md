@@ -1,4 +1,4 @@
-# DeepCluster
+# DeLUCS
 This repository contains all the source files required to run the Deep clustering algorithm for DNA sequences, as well as a detailed guide for running the code .
 
 
