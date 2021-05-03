@@ -1,5 +1,5 @@
 # DeLUCS
-This repository contains all the source files required to run the Deep clustering algorithm for DNA sequences, as well as a detailed guide for running the code .
+This repository contains all the source files required to run the DeLUCS algorithm for DNA sequences, as well as a detailed guide for running the code .
 
 
 ## Computational Pipeline: 
@@ -10,7 +10,8 @@ This repository contains all the source files required to run the Deep clusterin
 	* Output : file in the form (label,sequence,accession)
 
   ```
-	python build_db.py --data_path=<PATH_sequence_folder> --output=<PATH_output_file>
+  	python build_dp.py --data_path=<PATH_sequence_folder>
+	
   ```
 
 
@@ -20,6 +21,7 @@ This repository contains all the source files required to run the Deep clusterin
 	
   ```
 	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file>
+
   ```
  
 
