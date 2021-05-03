@@ -105,7 +105,10 @@ class Net_linear(nn.Module):
 
 
 def IID_loss(x_out, x_tf_out, lamb=1.0, EPS=sys.float_info.epsilon):
-    # has had softmax applied
+    # Impolementation of the IID loss function found in the paper:
+    # "Invariant Information Clustering for Unsupervised Image 
+    # Classification and Segmentation"
+    # The function can be found originally in https://github.com/xu-ji/IIC
     _, k = x_out.size()
     p_i_j = compute_joint(x_out, x_tf_out)
     assert (p_i_j.size() == (k, k))
@@ -128,7 +131,9 @@ def IID_loss(x_out, x_tf_out, lamb=1.0, EPS=sys.float_info.epsilon):
 
 
 def compute_joint(x_out, x_tf_out):
+    # The function can be found originally in https://github.com/xu-ji/IIC
     # produces variable that requires grad (since args require grad)
+    
     bn, k = x_out.size()
     assert (x_tf_out.size(0) == bn and x_tf_out.size(1) == k)
 
