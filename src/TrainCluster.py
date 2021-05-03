@@ -33,12 +33,12 @@ def weights_init(m):
 
 def eval_training(net, training_set, l=1.0, _lr=0.0001, k=6):
     """
-    :param net:
+    :param net: Network to be trained
     :param training_set:
-    :param l:
-    :param _lr:
-    :param k:
-    :return:
+    :param l: hyperparameter to favor conditional entropy
+    :param _lr: Learning Rate
+    :param k: word lenght in k-mer counts.
+    :return: Trained Network.
     """
     # Training parameters:
     batch_size = 512
@@ -82,11 +82,12 @@ def eval_training(net, training_set, l=1.0, _lr=0.0001, k=6):
 
 def test(net, x_test, y_test, k=6):
     """
-    :param net:
-    :param x_test:
-    :param y_test:
-    :param k:
-    :return:
+    Test the model for a new dataset.
+    :param net: Trained Network.
+    :param x_test: features of the new sequences to be tested
+    :param y_test: "ground truth" of the sequences-optional.
+    :param k: word length for the k-mer counts
+    :return: classification and clustering accuracy
     """
 
     dtype = torch.cuda.FloatTensor
@@ -163,7 +164,7 @@ def main():
         l = 2.8  # 2.8
         _lr = 8.e-5
 
-        # Load the best supervised model
+        # Initialize the network using the Kaiming technique
         net = Net_linear(4 ** k, numClasses)
         net.apply(weights_init)
         net.cuda()

@@ -21,7 +21,7 @@ def mutate_kmers(seq, k_dict, k_count, k, positions, mutations):
     :param seq: Original Sequence to be mutated.
     :param k_dict: Dictionary with kmers.
     :param k_count: Array with k-mer counts in the original seq.
-    :param k:
+    :param k: word length in the k-mer counts
     :param positions: Array with the mutated positions.
     :param mutations: Array with the correspondent mutations.
     :return: Array with kmer counts of the mutated version
