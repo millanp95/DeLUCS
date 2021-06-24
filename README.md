@@ -23,7 +23,7 @@ This repository contains all the source files required to run the DeLUCS (https:
   
 ### 3. Train the model.
 
-* For training DeLUCS to cluster your own data: 
+* For training DeLUCS to cluster your own data (No ground truth available): 
 	```
 	python TrainDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
@@ -31,7 +31,7 @@ This repository contains all the source files required to run the DeLUCS (https:
    	* Output : Pickle file with the cluster assignments for each sequence. 
 		
 		
-* For testing the performance of DeLUCS with your own data (Labels Available)
+* For testing the performance of DeLUCS with your own data (labels must be available)
 	```
 	python EvaluateDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
@@ -40,7 +40,7 @@ This repository contains all the source files required to run the DeLUCS (https:
 	* Output : Confusion Matrix. 
 			<!--* File with the misclassified sequences in the form (accession, true_label, predicted_label)-->
 
-* For training a single Neural Networks in an unsupervised way:
+* For training a single Neural Network in an unsupervised way:
 	```
 	python SingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
