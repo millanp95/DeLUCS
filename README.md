@@ -6,32 +6,30 @@ This repository contains all the source files required to run the DeLUCS algorit
 
 
 ### 1. Build the dataset:
-	* Input: Folders with the sequences in FASTA format
-	* Output : file in the form (label,sequence,accession)
-
   ```
-  	python build_dp.py --data_path=<PATH_sequence_folder>
-	
+  	python build_dp.py --data_path=<PATH_sequence_folder>	
   ```
+ * Input: Folders with the sequences in FASTA format
+ * Output : file in the form (label,sequence,accession)
 
 
 ### 2. Compute the pairs.
-	* Input: file in the form (label,sequence,accession)
-	* Output : file in the form of (pairs, x_test, y_test). 
-	
+
   ```
 	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file>
   ```
+  * Input: file in the form (label,sequence,accession)
+  * Output : file in the form of (pairs, x_test, y_test). 
   
 ### 3. Train the model.
 
-For training DeLUCS to cluster your own data: 
+* For training DeLUCS to cluster your own data: 
 ```
 python TrainDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 ```
 
-   * Input: Pickle file with the mimics. 
-   * Output : Pickle file with the cluster assignments for each sequence. 
+   ** Input: Pickle file with the mimics. 
+   ** Output : Pickle file with the cluster assignments for each sequence. 
 		
 		
 For testing the performance of DeLUCS with your own data (Labels Available)
