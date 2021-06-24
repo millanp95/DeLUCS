@@ -25,16 +25,16 @@ This repository contains all the source files required to run the DeLUCS algorit
   
 3. Train the model.
 
-For training DeLUCS to cluster your own data: 
+* For training DeLUCS to cluster your own data: 
 ```
 python TrainDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 ```
 
-* Input: Pickle file with the mimics. 
-* Output : Pickle file with the cluster assignments for each sequence. 
+   * Input: Pickle file with the mimics. 
+   * Output : Pickle file with the cluster assignments for each sequence. 
 		
 		
-For testing the performance of DeLUCS with your own data (Labels Available)
+* For testing the performance of DeLUCS with your own data (Labels Available)
 ```
 python EvaluateDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 ```
