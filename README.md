@@ -17,7 +17,7 @@ This repository contains all the source files required to run DeLUCS (https://do
  * Output : file in the form (label,sequence,accession)
 
 
-### 2. Compute the pairs.
+### 2. Compute the mimic sequences.
 
   ```
 	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file>
