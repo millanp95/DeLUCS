@@ -2,7 +2,7 @@
 This repository contains all the source files required to run the DeLUCS (https://doi.org/10.1101/2021.05.13.444008) for DNA sequences, as well as a detailed guide for running the code.
 
 <p align="center">
-  <img src ="paper/Images/Fig3.png" alt="drawing" width="500"/>
+  <img src ="paper/Images/Fig3.png" alt="drawing" width="800"/>
 </p>
 
 
