@@ -37,9 +37,8 @@ This repository contains all the source files required to run the DeLUCS algorit
 	```
 
 	* Input: Pickle file with the mimics in the form of (pairs, x_test, y_test). 
-	* Output : 
-			* Image with the confusion Matrix. 
-			* File with the misclassified sequences in the form (accession, true_label, predicted_label)
+	* Output : Confusion Matrix. 
+			<!--* File with the misclassified sequences in the form (accession, true_label, predicted_label)-->
 
 * For training a single Neural Networks in an unsupervised way:
 	```
