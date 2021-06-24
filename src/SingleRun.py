@@ -8,7 +8,7 @@ import argparse
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from helpers import cluster_acc,  plot_confusion_matrix
+from helpers import cluster_acc, plot_confusion_matrix
 from PytorchUtils import Seq_data, Net_linear, IID_loss
 from sklearn.preprocessing import StandardScaler
 from scipy import stats
@@ -109,18 +109,8 @@ def test(net, x_test, y_test, k=6):
         y_true.append(label)
 
     predicted = np.array(predicted)
-    y_true = np.array(y_true)
 
-    ind, acc = cluster_acc(y_true, predicted)
-
-    d = {}
-    for i, j in ind:
-        d[i] = j
-
-    for i in range(x_test.shape[0]):  # we do this for each sample or sample batch
-        predicted[i] = d[predicted[i]]
-
-    return predicted, acc
+    return predicted
 
 
 def main():
@@ -166,8 +156,11 @@ def main():
     net.cuda()
 
     eval_training(net, training_set, l=l, _lr=_lr, k=6)
-    prediction, acc = test(net, x_test, y_test)
+    prediction = test(net, x_test, y_test)
 
+    # Save the final prediction.
+    PATH = os.path.join(args.out_dir, 'predictions.p')
+    pickle.dump(prediction, open(PATH, "wb"))
 
 
 if __name__ == '__main__':

@@ -183,11 +183,11 @@ def main():
     for i in range(y_test.shape[0]):
         w[y_test[i], mode[0][i]] += 1
 
-        if y_test[i] != mode[0][i]:
-            print(i, y_test[i])    
+        #if y_test[i] != mode[0][i]:
+        #    print(i, y_test[i])
 
     print(w)
-    print(np.sum(np.diag(w)/np.sum(w)))
+    print("accuracy: ", np.sum(np.diag(w)/np.sum(w)))
     PATH = os.path.join(args.out_dir, 'Confusion Matrix.png')
     plot_confusion_matrix(w, unique_labels, PATH, normalize=False)
 

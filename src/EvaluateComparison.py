@@ -1,23 +1,18 @@
-import os
 import torch
 import pickle
 import numpy as np
-import random
 import argparse
-from helpers import kmer_count, cluster_acc
+from helpers import kmer_count
 from sklearn.pipeline import Pipeline
 from sklearn import mixture
 from sklearn.cluster import KMeans
 import torch.optim as optim
-import torch.nn as nn
-from torch.utils.data import DataLoader
 from helpers import cluster_acc
 import torch.nn as nn
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 from helpers import plot_confusion_matrix
-from sklearn.preprocessing import StandardScaler
-from PytorchUtils import Seq_data, Net_linear, IID_loss, LabeledData
+from PytorchUtils import Net_linear, LabeledData
 
 
 def dataDescription(data):
@@ -60,10 +55,11 @@ def dataDescription(data):
 
 
 def build_pipeline(numClasses, method):
+    normalizers = []
     if method == 'GMM':
         normalizers = [('classifier', mixture.GaussianMixture(n_components=numClasses))]
-    if method == 'k-means':
-        normalizers.append(('classifier', KMeans(n_clusters=numClasses, random_state=0)))
+    if method == 'k-means++':
+        normalizers.append(('classifier', KMeans(n_clusters=numClasses, init='kmeans++', random_state=321)))
     return Pipeline(normalizers)
 
 
@@ -86,11 +82,14 @@ def Unsupervised(train, method, k):
     x_train = np.asarray(train_features).astype('float32')
     y_train = np.asarray(train_labels)
 
-    pipeline = build_pipeline(numClasses, method)
-    pipeline.fit(x_train)
-    y_pred = pipeline.predict(x_train)
-    print("Cluster Accuracy")
-    print(cluster_acc(y_pred, y_train))
+    a = []
+    for i in range(10):
+        pipeline = build_pipeline(numClasses, method)
+        pipeline.fit(x_train)
+        y_pred = pipeline.predict(x_train)
+        #print("Cluster Accuracy")
+        a.append(cluster_acc(y_pred, y_train)[1])
+    print(a, np.mean(np.array(a)))
 
 def train(net, training_set, k):
     # Training parameters:
@@ -190,7 +189,7 @@ def Supervised(x_pairs,x,y, k):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', action='store', type=str, default='None')
-    parser.add_argument('--method', action='store', type=str, default='noise')  # [GMM,k-means,supervised]
+    parser.add_argument('--method', action='store', type=str, default='k-means++')  # [GMM,k-means++,supervised]
     args = parser.parse_args()
 
     TrainDataFile = args.data_path
@@ -204,7 +203,7 @@ def main():
     # Load Training Data.
     train = pickle.load(open(TrainDataFile, "rb"))
 
-    if method in ['GMM', 'k-means']:
+    if method in ['GMM', 'k-means++']:
         # get some stats about training and testing dataset
         dataDescription(train)
         Unsupervised(train, method, k)
