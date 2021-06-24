@@ -1,5 +1,5 @@
 # DeLUCS
-This repository contains all the source files required to run the DeLUCS algorithm for DNA sequences, as well as a detailed guide for running the code .
+This repository contains all the source files required to run the DeLUCS (https://doi.org/10.1101/2021.05.13.444008) for DNA sequences, as well as a detailed guide for running the code .
 
 
 ## Computational Pipeline: 
