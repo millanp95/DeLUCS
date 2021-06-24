@@ -5,7 +5,7 @@ This repository contains all the source files required to run the DeLUCS algorit
 ## Computational Pipeline: 
 
 
-1. Build the dataset:
+### 1. Build the dataset:
 	* Input: Folders with the sequences in FASTA format
 	* Output : file in the form (label,sequence,accession)
 
@@ -15,7 +15,7 @@ This repository contains all the source files required to run the DeLUCS algorit
   ```
 
 
-2. Compute the pairs.
+### 2. Compute the pairs.
 	* Input: file in the form (label,sequence,accession)
 	* Output : file in the form of (pairs, x_test, y_test). 
 	
@@ -23,9 +23,9 @@ This repository contains all the source files required to run the DeLUCS algorit
 	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file>
   ```
   
-3. Train the model.
+### 3. Train the model.
 
-* For training DeLUCS to cluster your own data: 
+For training DeLUCS to cluster your own data: 
 ```
 python TrainDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 ```
@@ -34,7 +34,7 @@ python TrainDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
    * Output : Pickle file with the cluster assignments for each sequence. 
 		
 		
-* For testing the performance of DeLUCS with your own data (Labels Available)
+For testing the performance of DeLUCS with your own data (Labels Available)
 ```
 python EvaluateDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 ```
