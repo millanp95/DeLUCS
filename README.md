@@ -21,19 +21,41 @@ This repository contains all the source files required to run the DeLUCS algorit
 	
   ```
 	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file>
-
   ```
- 
-
+  
 3. Train the model.
-	* Input: file in the form of (pairs, x_test, y_test). 
-	* Output : 
+
+For training DeLUCS to cluster your own data: 
+```
+python TrainDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
+```
+
+* Input: Pickle file with the mimics. 
+* Output : Pickle file with the cluster assignments for each sequence. 
+		
+		
+For testing the performance of DeLUCS with your own data (Labels Available)
+```
+python EvaluateDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
+```
+
+* Input: Pickle file with the mimics in the form of (pairs, x_test, y_test). 
+* Output : 
 		* Image with the confusion Matrix. 
         	* File with the misclassified sequences in the form (accession, true_label, predicted_label)
-```
-python TrainCluster.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 
+For training a single Neural Networks in an unsupervised way:
 ```
+python SingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
+```
+```
+python EvaluateSingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
+```
+
+
+
+		
+	
 
 <!--in one of the Compute Canada clusters available for our lab.
 
