@@ -1,5 +1,5 @@
 # DeLUCS
-This repository contains all the source files required to run the DeLUCS (https://doi.org/10.1101/2021.05.13.444008) for DNA sequences, as well as a detailed guide for running the code.
+This repository contains all the source files required to run DeLUCS (https://doi.org/10.1101/2021.05.13.444008) a deep learning clustering tool for DNA sequences, as well as a detailed guide for running the code.
 
 <p align="center">
   <img src ="paper/Images/Fig3.png" alt="drawing" width="800"/>
@@ -17,7 +17,7 @@ This repository contains all the source files required to run the DeLUCS (https:
  * Output : file in the form (label,sequence,accession)
 
 
-### 2. Compute the pairs.
+### 2. Compute the mimic sequences.
 
   ```
 	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file>
@@ -48,6 +48,7 @@ This repository contains all the source files required to run the DeLUCS (https:
 	```
 	python SingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
+* For testing the performance  a single Neural Network trained in an unsupervised way (labels must be available):
 	```
 	python EvaluateSingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
