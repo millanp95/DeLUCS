@@ -48,6 +48,7 @@ This repository contains all the source files required to run DeLUCS (https://do
 	```
 	python SingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
+* For testing the performance  a single Neural Network trained in an unsupervised way (labels must be available):
 	```
 	python EvaluateSingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
