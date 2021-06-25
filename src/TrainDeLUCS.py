@@ -31,7 +31,7 @@ def weights_init(m):
         torch.nn.init.zeros_(m.bias)
 
 
-def eval_training(net, training_set, l=1.0, _lr=0.0001, k=6):
+def training(net, training_set, l=1.0, _lr=0.0001, k=6):
     """
     :param net: Network to be trained
     :param training_set:
@@ -161,7 +161,7 @@ def main():
         net.apply(weights_init)
         net.cuda()
 
-        eval_training(net, training_set, l=l, _lr=_lr, k=6)
+        training(net, training_set, l=l, _lr=_lr, k=6)
         prediction = test(net, x_test, y_test)
         predictions.append(prediction)
 
