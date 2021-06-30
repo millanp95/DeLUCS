@@ -80,7 +80,7 @@ def eval_training(net, training_set, l=1.0, _lr=0.0001, k=6):
                     param.add_(torch.randn(param.size()).type(dtype) * 0.09)
 
 
-def test(net, x_test, y_test, k=6):
+def test(net, x_test, k=6):
     """
     Test the model for a new dataset.
     :param net: Trained Network.
@@ -93,20 +93,14 @@ def test(net, x_test, y_test, k=6):
     dtype = torch.cuda.FloatTensor
     net.eval()
     predicted = []
-    y_true = []
 
     for i in range(x_test.shape[0]):  # we do this for each sample or sample batch
 
         sample = torch.from_numpy(x_test[i])
-        label = y_test[i]
-
         sample = sample.view(1, 1, 2 ** k, 2 ** k).type(dtype)
         output = net(sample)
-
         top_n, top_i = output.topk(1)  # Get Label from prediction.
-
         predicted.append(top_i[0].item())
-        y_true.append(label)
 
     predicted = np.array(predicted)
 
@@ -156,7 +150,7 @@ def main():
     net.cuda()
 
     eval_training(net, training_set, l=l, _lr=_lr, k=6)
-    prediction = test(net, x_test, y_test)
+    prediction = test(net, x_test)
 
     # Save the final prediction.
     PATH = os.path.join(args.out_dir, 'predictions.p')
