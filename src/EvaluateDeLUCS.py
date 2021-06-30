@@ -8,7 +8,7 @@ import argparse
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from helpers import cluster_acc,  plot_confusion_matrix
+from helpers import cluster_acc, plot_confusion_matrix
 from PytorchUtils import Seq_data, Net_linear, IID_loss
 from sklearn.preprocessing import StandardScaler
 from scipy import stats
@@ -31,13 +31,15 @@ def weights_init(m):
         torch.nn.init.zeros_(m.bias)
 
 
-def eval_training(net, training_set, l=1.0, _lr=0.0001, k=6):
+def eval_training(net, training_set, x_test, y_test, l=1.0, _lr=0.0001, k=6):
     """
+    :param x_test: features of the new sequences to be tested
+    :param y_test: "ground truth" of the sequences-optional.
     :param net: Network to be trained
-    :param training_set:
+    :param training_set: Dataset with pairs of CGRs of the form (original, mimic)
     :param l: hyperparameter to favor conditional entropy
     :param _lr: Learning Rate
-    :param k: word lenght in k-mer counts.
+    :param k: word length in k-mer counts.
     :return: Trained Network.
     """
     # Training parameters:
@@ -79,21 +81,12 @@ def eval_training(net, training_set, l=1.0, _lr=0.0001, k=6):
                 for param in net.parameters():
                     param.add_(torch.randn(param.size()).type(dtype) * 0.09)
 
+    # ------------------- Testing Process -------------------------------------
 
-def test(net, x_test, y_test, k=6):
-    """
-    Test the model for a new dataset.
-    :param net: Trained Network.
-    :param x_test: features of the new sequences to be tested
-    :param y_test: "ground truth" of the sequences-optional.
-    :param k: word length for the k-mer counts
-    :return: classification and clustering accuracy
-    """
-
-    dtype = torch.cuda.FloatTensor
+    # Testing Parameters
     net.eval()
     predicted = []
-    y_true = []
+    y_true = []  # "ground truth" is available
 
     for i in range(x_test.shape[0]):  # we do this for each sample or sample batch
 
@@ -169,8 +162,7 @@ def main():
         net.apply(weights_init)
         net.cuda()
 
-        eval_training(net, training_set, l=l, _lr=_lr, k=6)
-        prediction, acc = test(net, x_test, y_test)
+        prediction, acc = eval_training(net, training_set, x_test, y_test, l=l, _lr=_lr, k=6)
         predictions.append(prediction)
         accuracies.append(acc)
 
@@ -183,11 +175,12 @@ def main():
     for i in range(y_test.shape[0]):
         w[y_test[i], mode[0][i]] += 1
 
-        #if y_test[i] != mode[0][i]:
+        # Print "misclassified" sequences.
+        # if y_test[i] != mode[0][i]:
         #    print(i, y_test[i])
 
     print(w)
-    print("accuracy: ", np.sum(np.diag(w)/np.sum(w)))
+    print("accuracy: ", np.sum(np.diag(w) / np.sum(w)))
     PATH = os.path.join(args.out_dir, 'Confusion Matrix.png')
     plot_confusion_matrix(w, unique_labels, PATH, normalize=False)
 

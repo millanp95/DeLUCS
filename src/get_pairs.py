@@ -6,7 +6,7 @@ from itertools import product
 from helpers import kmer_count
 
 
-def modify_mutation(train, k, output_path):
+def modify_mutation(train, k, n_mimics, output_path):
     """
     :param train: dataset in pickle format
     :param k: word length
@@ -40,15 +40,16 @@ def modify_mutation(train, k, output_path):
         test_labels.append(label)
 
         # Append all the modified pairs for training.
-        for j in range(1):
-            indices, mutations = mimics.transition(train[i][1], 1 - 1e-4)
-            t_trans = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
-            t_trans = t_trans / np.sum(t_trans)
 
-            indices, mutations = mimics.transversion(train[i][1], 1 - 0.5e-4)
-            t_traver = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
-            t_traver = t_traver / np.sum(t_traver)
+        indices, mutations = mimics.transition(train[i][1], 1 - 1e-4)
+        t_trans = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
+        t_trans = t_trans / np.sum(t_trans)
 
+        indices, mutations = mimics.transversion(train[i][1], 1 - 0.5e-4)
+        t_traver = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
+        t_traver = t_traver / np.sum(t_traver)
+
+        for j in range(n_mimics-2):
             indices, mutations = mimics.transition_transversion(train[i][1], 1 - 1e-4, 1 - 0.5e-4)
             t_mutated = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
             t_mutated = t_mutated / np.sum(t_mutated)
@@ -66,7 +67,7 @@ def modify_mutation(train, k, output_path):
         pickle.dump(data, f)
 
 
-def modify_noise(train, k, output_path):
+def modify_noise(train, k, n_mimics, output_path):
     """
     :param train: dataset in pickle format
     :param k: word length
@@ -111,8 +112,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', action='store', type=str, default='None')
     parser.add_argument('--k', action='store', type=int, default=6)
-    parser.add_argument('--modify', action='store', type=str, default='noise')  # [noise,mutation]
+    parser.add_argument('--n_mimics', action='store', type=int, default=3)
+    parser.add_argument('--modify', action='store', type=str, default='mutation')  # [noise,mutation]
     parser.add_argument('--output', action='store', type=str, default=None)
+
     args = parser.parse_args()
 
     TrainDataFile = args.data_path
@@ -121,9 +124,9 @@ def main():
     k = args.k
 
     if args.modify == 'mutation':
-        modify_mutation(data, k, args.output)
+        modify_mutation(data, k, args.n_mimics, args.output)
     elif args.modify == 'noise':
-        modify_noise(data, k, args.output)
+        modify_noise(data, k, args.n_mimics, args.output)
     else:
         print('Unsupported modification method')
 
