@@ -35,7 +35,7 @@ This repository contains all the source files required to run DeLUCS (https://do
    	* Output : Pickle file with the cluster assignments for each sequence. 
 		
 		
-* For testing the performance of DeLUCS with your own data (labels must be available)
+* For training DeLUCS and testing its performance with your own data (labels must be available)
 	```
 	python EvaluateDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
