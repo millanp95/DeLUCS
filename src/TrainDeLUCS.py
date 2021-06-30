@@ -34,10 +34,10 @@ def weights_init(m):
 def training(net, training_set, l=1.0, _lr=0.0001, k=6):
     """
     :param net: Network to be trained
-    :param training_set:
-    :param l: hyperparameter to favor conditional entropy
+    :param training_set: Dataset with pairs of CGRs of the form (original, mimic)
+    :param l: Hyperparameter to favor conditional entropy
     :param _lr: Learning Rate
-    :param k: word lenght in k-mer counts.
+    :param k: word length in k-mer counts.
     :return: Trained Network.
     """
     # Training parameters:
@@ -80,12 +80,11 @@ def training(net, training_set, l=1.0, _lr=0.0001, k=6):
                     param.add_(torch.randn(param.size()).type(dtype) * 0.09)
 
 
-def test(net, x_test, y_test, k=6):
+def predict(net, x_test, k=6):
     """
     Test the model for a new dataset.
     :param net: Trained Network.
     :param x_test: features of the new sequences to be tested
-    :param y_test: "ground truth" of the sequences-optional.
     :param k: word length for the k-mer counts
     :return: classification and clustering accuracy
     """
@@ -93,20 +92,14 @@ def test(net, x_test, y_test, k=6):
     dtype = torch.cuda.FloatTensor
     net.eval()
     predicted = []
-    y_true = []
 
     for i in range(x_test.shape[0]):  # we do this for each sample or sample batch
 
         sample = torch.from_numpy(x_test[i])
-        label = y_test[i]
-
         sample = sample.view(1, 1, 2 ** k, 2 ** k).type(dtype)
         output = net(sample)
-
         top_n, top_i = output.topk(1)  # Get Label from prediction.
-
         predicted.append(top_i[0].item())
-        y_true.append(label)
 
     predicted = np.array(predicted)
 
@@ -162,11 +155,11 @@ def main():
         net.cuda()
 
         training(net, training_set, l=l, _lr=_lr, k=6)
-        prediction = test(net, x_test, y_test)
+        prediction = predict(net, x_test)
         predictions.append(prediction)
 
-    # There is no ground truth. Hence, all cluster ID's
-    #  are relative to the first ANN.
+    # There is no ground truth. Hence, we find a uniform
+    # assignment to all predictions.
     for k in range(1, predictions.shape[0]):
         ind, _ = cluster_acc(predictions[0][:], predictions[:][k])
 
@@ -180,7 +173,7 @@ def main():
     # Take the majority voting of the predictions.
     mode, counts = stats.mode(predictions, axis=0)
 
-    # Save the final prediction.
+    # Save the final prediction (Numeric Cluster assignments)
     PATH = os.path.join(args.out_dir, 'predictions.p')
     pickle.dump(mode[0][:], open(PATH, "wb"))
 
