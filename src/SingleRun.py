@@ -152,9 +152,20 @@ def main():
     eval_training(net, training_set, l=l, _lr=_lr, k=6)
     prediction = test(net, x_test)
 
-    # Save the final prediction.
+    # Load the original file to get the original sequences.
+    original_files = os.path.join(data_dir, 'train.p')
+    data = pickle.load(open(original_files, "rb"))
+    prediction_pairs = []
+
+    # Assign the prediction to each accession number.
+    for i in range(len(data)):
+        prediction_pairs.append((data[i][2], prediction[i]))
+        print((data[i][2], prediction[i]))
+
+    # Save the final prediction
     PATH = os.path.join(args.out_dir, 'predictions.p')
-    pickle.dump(prediction, open(PATH, "wb"))
+    pickle.dump(prediction_pairs, open(PATH, "wb"))
+
 
 
 if __name__ == '__main__':

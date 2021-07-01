@@ -160,6 +160,7 @@ def main():
 
     # There is no ground truth. Hence, we find a uniform
     # assignment to all predictions.
+    predictions = np.array(predictions)
     for k in range(1, predictions.shape[0]):
         ind, _ = cluster_acc(predictions[0][:], predictions[:][k])
 
@@ -173,9 +174,19 @@ def main():
     # Take the majority voting of the predictions.
     mode, counts = stats.mode(predictions, axis=0)
 
-    # Save the final prediction (Numeric Cluster assignments)
+    # Load the original file to get the original sequences.
+    original_files = os.path.join(data_dir, 'train.p')
+    data = pickle.load(open(original_files, "rb"))
+    prediction_pairs = []
+
+    # Assign the prediction to each accession number.
+    for i in range(len(data)):
+        prediction_pairs.append((data[i][2], mode[0][i]))
+        print((data[i][2], mode[0][i]))
+
+    # Save the final prediction
     PATH = os.path.join(args.out_dir, 'predictions.p')
-    pickle.dump(mode[0][:], open(PATH, "wb"))
+    pickle.dump(prediction_pairs, open(PATH, "wb"))
 
 
 if __name__ == '__main__':
