@@ -31,7 +31,7 @@ This repository contains all the source files required to run DeLUCS (https://do
 	```
 	python TrainDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
- 	* Input: Pickle file with the mimics. 
+ 	* Input: Pickle file with the mimics (Always ending with /testing_data.p) . 
    	* Output : Pickle file with the cluster assignments for each sequence. 
 		
 		
