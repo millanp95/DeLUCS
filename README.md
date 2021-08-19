@@ -20,7 +20,7 @@ This repository contains all the source files required to run DeLUCS (https://do
 ### 2. Compute the mimic sequences.
 
   ```
-	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file>
+	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file> --n_mimics=<n mimics per sequence>
   ```
 * Input: file in the form (label,sequence,accession)
 * Output : file in the form of (pairs, x_test, y_test)
