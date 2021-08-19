@@ -113,6 +113,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', action='store', type=str, default='None')
     parser.add_argument('--out_dir', action='store', type=str, default='False')
+    parser.add_argument('--n_custers', action='store', type=int, default=0)
     args = parser.parse_args()
 
     torch.manual_seed(0)
@@ -127,8 +128,11 @@ def main():
     x_train, x_test, y_test = pickle.load(open(filename, 'rb'))
     print("The size of the training array is:", x_train.shape)
 
-    unique_labels = sorted(set(y_test))
-    numClasses = len(unique_labels)
+    if args.n_clusters == 0:
+        unique_labels = sorted(set(y_test))
+        numClasses = len(unique_labels)
+    else:
+        numClasses = args.n_clusters
 
     # scaling the data.
     scaler = StandardScaler()
