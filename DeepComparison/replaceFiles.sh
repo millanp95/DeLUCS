@@ -9,4 +9,4 @@ cp DeepComparison/DEC.py iDEC/DEC.py
 
 
 #copy IDEC
-cp DeepComparison/ iDEC/IDEC.py
+cp DeepComparison/IDEC.py iDEC/IDEC.py
