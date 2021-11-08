@@ -55,10 +55,10 @@ This repository contains all the source files required to run DeLUCS (https://do
 
 ### To Do:
 
-Optimize the testing process
-Add training parameters to the command line input
-Re-Define input structure
-Define Costumizable Architecture
+* Optimize the testing process
+* Add training parameters to the command line input
+* Re-Define input structure
+* Define Costumizable Architecture
 
 		
 	
