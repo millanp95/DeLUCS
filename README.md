@@ -53,7 +53,12 @@ This repository contains all the source files required to run DeLUCS (https://do
 	python EvaluateSingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
 
+### To Do:
 
+Optimize the testing process
+Add training parameters to the command line input
+Re-Define input structure
+Define Costumizable Architecture
 
 		
 	
