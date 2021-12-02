@@ -67,15 +67,15 @@ This repository contains all the source files required to run DeLUCS (https://do
 If you find DeLUCS useful in your research please consider citing:
 
 	```
-	@article {Arias2021.05.13.444008,
-	author = {Mill{\'a}n Arias, Pablo  and Alipour, Fatemeh and Hill, Kathleen A. and Kari, Lila},
-	title = {DeLUCS: Deep Learning for Unsupervised Clustering of DNA Sequences},
-	elocation-id = {2021.05.13.444008},
-	year = {2021},
-	doi = {10.1101/2021.05.13.444008},
-	publisher = {Cold Spring Harbor Laboratory},
-	journal = {bioRxiv}
-	}
+		@article {Arias2021.05.13.444008,
+		author = {Millan Arias, Pablo  and Alipour, Fatemeh and Hill, Kathleen A. and Kari, Lila},
+		title = {DeLUCS: Deep Learning for Unsupervised Clustering of DNA Sequences},
+		elocation-id = {2021.05.13.444008},
+		year = {2021},
+		doi = {10.1101/2021.05.13.444008},
+		publisher = {Cold Spring Harbor Laboratory},
+		journal = {bioRxiv}
+		}
 	```	
 	
 
