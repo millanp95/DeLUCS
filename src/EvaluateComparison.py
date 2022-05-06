@@ -59,7 +59,7 @@ def build_pipeline(numClasses, method):
     if method == 'GMM':
         normalizers = [('classifier', mixture.GaussianMixture(n_components=numClasses))]
     if method == 'k-means++':
-        normalizers.append(('classifier', KMeans(n_clusters=numClasses, init='kmeans++', random_state=321)))
+        normalizers.append(('classifier', KMeans(n_clusters=numClasses, init='k-means++', random_state=321)))
     return Pipeline(normalizers)
 
 
