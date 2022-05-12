@@ -24,7 +24,9 @@ class Seq_data(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-        sample = {'true': self.data[idx, 0, :], 'modified': self.data[idx, 0, :]}
+        
+        #sample = {'true': self.data[idx, 0, :], 'modified': self.data[idx, 1, :]} 
+        sample = {'true': self.data[idx, 0, :], 'modified': self.data[idx, 0, :]}  #<--- We can enforce the prediction of same vector
         return sample
 
 
