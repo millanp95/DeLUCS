@@ -53,30 +53,24 @@ This repository contains all the source files required to run DeLUCS (https://do
 	python EvaluateSingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
 	```
 
-### To Do:
-
-* Optimize the testing process
-* Add training parameters to the command line input
-* Re-Define input structure
-* Define Costumizable Architecture
-
----
-
 ## Citation 
 
 If you find DeLUCS useful in your research please consider citing:
 
 	
-	@article {Arias2021.05.13.444008,
-	author = {Millan Arias, Pablo  and Alipour, Fatemeh and Hill, Kathleen A. and Kari, Lila},
-	title = {DeLUCS: Deep Learning for Unsupervised Clustering of DNA Sequences},
-	elocation-id = {2021.05.13.444008},
-	year = {2021},
-	doi = {10.1101/2021.05.13.444008},
-	publisher = {Cold Spring Harbor Laboratory},
-	journal = {bioRxiv}
-	}
-		
+	@article{10.1371/journal.pone.0261531,
+	    doi = {10.1371/journal.pone.0261531},
+	    author = {Millán Arias, Pablo AND Alipour, Fatemeh AND Hill, Kathleen A. AND Kari, Lila},
+	    journal = {PLOS ONE},
+	    publisher = {Public Library of Science},
+	    title = {DeLUCS: Deep learning for unsupervised clustering of DNA sequences},
+	    year = {2022},
+	    month = {01},
+	    volume = {17},
+	    url = {https://doi.org/10.1371/journal.pone.0261531},
+	    pages = {1-25},
+	    number = {1},
+	}	
 	
 
 <!--in one of the Compute Canada clusters available for our lab.
