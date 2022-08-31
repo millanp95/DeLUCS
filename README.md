@@ -1,5 +1,5 @@
 # DeLUCS
-This repository contains all the source files required to reproduce the results in (https://doi.org/10.1101/2021.05.13.444008) a deep learning clustering tool for DNA sequences, as well as a detailed guide for running the code.
+This repository contains all the source files required to reproduce the results in the original DeLUCS paper (https://doi.org/10.1101/2021.05.13.444008), as well as a detailed guide for running the code.
 
 <!--
 <p align="center">
