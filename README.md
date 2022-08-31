@@ -1,7 +1,6 @@
 # DeLUCS
-This repository contains all the source files required to run DeLUCS (https://doi.org/10.1101/2021.05.13.444008) a deep learning clustering tool for DNA sequences, as well as a detailed guide for running the code.
+This repository contains all the source files required to reproduce the results in (https://doi.org/10.1101/2021.05.13.444008) a deep learning clustering tool for DNA sequences, as well as a detailed guide for running the code.
 
- 
 <!--
 <p align="center">
 <img src ="paper/Images/Fig3.png" alt="drawing" width="800"/>
@@ -28,32 +27,21 @@ This repository contains all the source files required to run DeLUCS (https://do
 * Output : file in the form of (pairs, x_test, y_test)
   
 ### 3. Train the model.
+	* For training DeLUCS and testing its performance
+		```
+		python EvaluateDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
+		```
 
-* For training DeLUCS to cluster your own data (No ground truth available): 
-	```
-	python TrainDeLUCS.py --n_clusters=<number of clusters> --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR> 
-	```
- 	* Input: Pickle file with the mimics (Always ending with /testing_data.p) . 
-   	* Output : Pickle file with the cluster assignments for each sequence. 
-		
-		
-* For training DeLUCS and testing its performance with your own data (labels must be available)
-	```
-	python EvaluateDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
-	```
+		* Input: Pickle file with the mimics in the form of (pairs, x_test, y_test). 
+		* Output : Confusion Matrix. 
+				<!--* File with the misclassified sequences in the form (accession, true_label, predicted_label)-->
 
-	* Input: Pickle file with the mimics in the form of (pairs, x_test, y_test). 
-	* Output : Confusion Matrix. 
-			<!--* File with the misclassified sequences in the form (accession, true_label, predicted_label)-->
-
-* For training a single Neural Network in an unsupervised way:
-	```
-	python SingleRun.py --n_clusters=<number of clusters> --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
-	```
-* For testing the performance  a single Neural Network trained in an unsupervised way (labels must be available):
-	```
-	python EvaluateSingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
-	```
+	* For testing the performance  a single Neural Network trained in an unsupervised way (labels must be available):
+		```
+		python EvaluateSingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
+		```
+## Training on your own data
+We recomend using the updated version of the code in (https://github.com/Kari-Genomics-Lab) for training on your own data. 
 
 ## Citation 
 
