@@ -168,6 +168,7 @@ def main():
 
     predictions = np.array(predictions)
     mode, counts = stats.mode(predictions, axis=0)
+    mode = np.atleast_2d(mode) # Allows compatibility with SciPy versions >= 1.11, due to new default behaviour for stats.mode
     # print(mode)
     print(accuracies)
 

@@ -177,6 +177,7 @@ def main():
 
     # Take the majority voting of the predictions.
     mode, counts = stats.mode(predictions, axis=0)
+    mode = np.atleast_2d(mode) # Allows compatibility with SciPy versions >= 1.11, due to new default behaviour for stats.mode
 
     # Load the original file to get the original sequences.
     original_files = os.path.join(data_dir, 'train.p')
