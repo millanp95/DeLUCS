@@ -18,7 +18,7 @@ def kmer_count(seq, k):
 
     idx = 0
 
-    while idx < len(seq) - k:
+    while idx < len(seq) - k + 1:
         try:
             kmerDict[seq[idx:idx + k]] += 1
         except KeyError:
