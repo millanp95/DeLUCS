@@ -115,7 +115,7 @@ def main():
     parser.add_argument('--out_dir', action='store', type=str, default=None)
     parser.add_argument('--output_file', action='store', type=str, default='predictions.p', help='File name (not path) of predictions file (default: predictions.p)')
     parser.add_argument('--overwrite', action='store_true', default=False, help='Including this optional flag allows overwriting existing predictions file')
-    parser.add_argument('--n_custers', action='store', type=int, default=0)
+    parser.add_argument('--n_clusters', action='store', type=int, default=0)
 
     args = parser.parse_args()
 
