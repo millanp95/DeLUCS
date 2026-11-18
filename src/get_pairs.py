@@ -111,13 +111,50 @@ def modify_noise(train, k, n_mimics, output_path):
     with open(output_path, 'wb') as f:
         pickle.dump(data, f)
 
+def modify_duplication(train, k, n_mimics, output_path):
+    """
+    :param train: dataset in pickle format
+    :param k: word length
+    :param output_path: file to save the mimics.
+    :return: Pickle file with mimic sequences.
+    """
+    unique_labels = sorted(set(map(lambda x: x[0], train)))
+
+    train_features = []
+    test_features = []
+    test_labels = []
+
+    # Compute Features and save original data for testing.
+    print('Computing training pairs')
+    for i in range(len(train)):
+        t = kmer_count(train[i][1], k)
+        t = t / np.sum(t)
+
+        # Save the original cgr for testing.
+        test_features.append(t)
+        label = unique_labels.index(train[i][0])
+        test_labels.append(label)
+
+        # Append all the original/original pairs for training.
+        for j in range(n_mimics):
+            train_features.extend([(t, t)])
+
+    x_train = np.asarray(train_features).astype('float32')
+    x_test = np.asarray(test_features).astype('float32')
+    y_test = np.asarray(test_labels)  # True labels
+
+    print('.....saving data.....')
+    # Save data
+    data = (x_train, x_test, y_test)
+    with open(output_path, 'wb') as f:
+        pickle.dump(data, f)
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', action='store', type=str, default='None')
     parser.add_argument('--k', action='store', type=int, default=6)
     parser.add_argument('--n_mimics', action='store', type=int, default=3)
-    parser.add_argument('--modify', action='store', type=str, default='mutation')  # [noise,mutation]
+    parser.add_argument('--modify', action='store', type=str, default='mutation', help="What types of augmentation to use. Options: noise, mutation, duplication.")  # [noise,mutation,duplication]
     parser.add_argument('--output', action='store', type=str, default=None)
 
     args = parser.parse_args()
@@ -134,6 +171,8 @@ def main():
         modify_mutation(data, k, args.n_mimics, args.output)
     elif args.modify == 'noise':
         modify_noise(data, k, args.n_mimics, args.output)
+    elif args.modify == 'duplication':
+        modify_duplication(data, args.k, args.n_mimics, args.output)
     else:
         print('Unsupported modification method')
 
