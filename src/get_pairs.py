@@ -115,8 +115,12 @@ def main():
     parser.add_argument('--n_mimics', action='store', type=int, default=3)
     parser.add_argument('--modify', action='store', type=str, default='mutation')  # [noise,mutation]
     parser.add_argument('--output', action='store', type=str, default=None)
+    parser.add_argument('--seed', action='store', type=int, default=None)
 
     args = parser.parse_args()
+
+    if args.seed is not None:
+        np.random.seed(args.seed)
 
     TrainDataFile = args.data_path
     data = pickle.load(open(TrainDataFile, "rb"))

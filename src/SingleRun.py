@@ -13,12 +13,6 @@ from PytorchUtils import Seq_data, Net_linear, IID_loss
 from sklearn.preprocessing import StandardScaler
 from scipy import stats
 
-# Random Seeds for reproducibility.
-torch.manual_seed(0)
-torch.cuda.manual_seed(0)
-np.random.seed(0)
-random.seed(0)
-
 
 def weights_init(m):
     """
@@ -116,11 +110,17 @@ def main():
     parser.add_argument('--output_file', action='store', type=str, default='predictions.p', help='File name (not path) of predictions file (default: predictions.p)')
     parser.add_argument('--overwrite', action='store_true', default=False, help='Including this optional flag allows overwriting existing predictions file')
     parser.add_argument('--n_clusters', action='store', type=int, default=0)
-
+    parser.add_argument('--seed', action='store', type=int, default=None)
     args = parser.parse_args()
 
-    torch.manual_seed(0)
+    seed = args.seed
 
+    if seed is not None:
+        # Fixing random seeds for reproducibility.
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+        np.random.seed(seed)
+        random.seed(seed)
     # Set value of k
     k = 6
 
