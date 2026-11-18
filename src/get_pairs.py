@@ -14,6 +14,9 @@ def modify_mutation(train, k, n_mimics, output_path):
     :return: Pickle file with mimic sequences.
     """
 
+    if n_mimics < 3:
+        parser.error(f"When using sequence/mutation pairs, n_mimics ({n_mimics}) must be at least 3.")
+
     unique_labels = sorted(set(map(lambda x: x[0], train)))
 
     train_features = []
@@ -44,17 +47,19 @@ def modify_mutation(train, k, n_mimics, output_path):
         indices, mutations = mimics.transition(train[i][1], 1 - 1e-4)
         t_trans = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
         t_trans = t_trans / np.sum(t_trans)
+        train_features.extend([(t_norm, t_trans)])
 
         indices, mutations = mimics.transversion(train[i][1], 1 - 0.5e-4)
         t_traver = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
         t_traver = t_traver / np.sum(t_traver)
+        train_features.extend([(t_norm, t_traver)])
 
         for j in range(n_mimics-2):
             indices, mutations = mimics.transition_transversion(train[i][1], 1 - 1e-4, 1 - 0.5e-4)
             t_mutated = mimics.mutate_kmers(train[i][1], kmer_dict, t, k, indices, mutations)
             t_mutated = t_mutated / np.sum(t_mutated)
 
-            train_features.extend([(t_norm, t_trans), (t_norm, t_traver), (t_norm, t_mutated)])
+            train_features.extend([(t_norm, t_mutated)])
 
     x_train = np.array(train_features).astype('float32')
     x_test = np.array(test_features).astype('float32')
@@ -79,7 +84,6 @@ def modify_noise(train, k, n_mimics, output_path):
     train_features = []
     test_features = []
     test_labels = []
-    n_pairs = 3
 
     # Compute Features and save original data for testing.
     print('Computing training pairs')
@@ -93,7 +97,7 @@ def modify_noise(train, k, n_mimics, output_path):
         test_labels.append(label)
 
         # Append all the modified pairs for training.
-        for j in range(n_pairs):
+        for j in range(n_mimics):
             t_gaussian = mimics.add_noise(t)
             train_features.extend([(t, t_gaussian)])
 
@@ -117,6 +121,9 @@ def main():
     parser.add_argument('--output', action='store', type=str, default=None)
 
     args = parser.parse_args()
+
+    if args.n_mimics < 1:
+        parser.error(f"n_mimics ({args.n_mimics}) must be a positive integer.")
 
     TrainDataFile = args.data_path
     data = pickle.load(open(TrainDataFile, "rb"))
