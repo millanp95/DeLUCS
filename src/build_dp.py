@@ -35,7 +35,9 @@ def replace(seq):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_path', action='store', type=str, default='None')
+    parser.add_argument('--data_path', action='store', type=str, default=None)
+    parser.add_argument('--output_dir', action='store', type=str, default=None)
+    parser.add_argument('--output_file', action='store', type=str, default='train.p')
     args = parser.parse_args()
 
     seq_dir = args.data_path
@@ -61,7 +63,12 @@ def main():
 
                 data.append((label, seq, accession_number))
 
-    pathTrain = os.path.join(seq_dir, 'train.p')
+    output_dir = args.output_dir
+
+    if output_dir is None:
+        output_dir = seq_dir
+
+    pathTrain = os.path.join(output_dir, args.output_file)
     pickle.dump(data, open(pathTrain, "wb"))
 
 
