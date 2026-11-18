@@ -113,6 +113,8 @@ def main():
     parser.add_argument('--overwrite', action='store_true', default=False, help='Including this optional flag allows overwriting existing predictions file')
     parser.add_argument('--n_clusters', action='store', type=int, default=0)
     parser.add_argument('--seed', action='store', type=int, default=None)
+    parser.add_argument('--k', action='store', type=int, default=6)
+
     args = parser.parse_args()
 
     seed = args.seed
@@ -125,7 +127,11 @@ def main():
         random.seed(seed)
 
     # Set value of k
-    k = 6
+    k_value = args.k
+    if k_value < 1:
+        parser.error(f"k-mer length ({k_value}) must be a positive integer.")
+    if k_value > 7:
+        print("Warning: k values larger than 7 may lead to excessive memory use. The number of inputs to the neural networks scales exponentially with k.")
 
     # Determine output destination.
     output_dir = args.out_dir if args.out_dir is not None else os.getcwd()
@@ -172,11 +178,11 @@ def main():
         _lr = 8.e-5
 
         # Initialize the network using the Kaiming technique
-        net = Net_linear(4 ** k, numClasses)
+        net = Net_linear(4 ** k_value, numClasses)
         net.apply(weights_init)
         net.cuda()
 
-        training(net, training_set, l=l, _lr=_lr, k=6)
+        training(net, training_set, l=l, _lr=_lr, k=k_value)
         prediction = predict(net, x_test)
         predictions.append(prediction)
 
