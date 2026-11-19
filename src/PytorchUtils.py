@@ -89,6 +89,7 @@ class Net(nn.Module):
 class Net_linear(nn.Module):
     def __init__(self, n_input, n_output):
         super(Net_linear, self).__init__()
+        self.n_input = n_input
         self.classifier = nn.Sequential(
             nn.Linear(n_input, 512),
             nn.ReLU(),
@@ -101,7 +102,7 @@ class Net_linear(nn.Module):
         )
 
     def forward(self, x):
-        x = x.view(-1, 4096)
+        x = x.view(-1, self.n_input)
         out = self.classifier(x)
         return out
 
