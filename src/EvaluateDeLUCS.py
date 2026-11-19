@@ -25,10 +25,9 @@ def weights_init(m):
         torch.nn.init.zeros_(m.bias)
 
 
-def eval_training(net, training_set, x_test, y_test, l=1.0, _lr=0.0001, k=6):
+def eval_training(net, training_set, x_test, l=1.0, _lr=0.0001, k=6):
     """
     :param x_test: features of the new sequences to be tested
-    :param y_test: "ground truth" of the sequences-optional.
     :param net: Network to be trained
     :param training_set: Dataset with pairs of CGRs of the form (original, mimic)
     :param l: hyperparameter to favor conditional entropy
@@ -80,12 +79,10 @@ def eval_training(net, training_set, x_test, y_test, l=1.0, _lr=0.0001, k=6):
     # Testing Parameters
     net.eval()
     predicted = []
-    y_true = []  # "ground truth" is available
 
     for i in range(x_test.shape[0]):  # we do this for each sample or sample batch
 
         sample = torch.from_numpy(x_test[i])
-        label = y_test[i]
 
         sample = sample.view(1, 1, 2 ** k, 2 ** k).type(dtype)
         output = net(sample)
@@ -93,21 +90,10 @@ def eval_training(net, training_set, x_test, y_test, l=1.0, _lr=0.0001, k=6):
         top_n, top_i = output.topk(1)  # Get Label from prediction.
 
         predicted.append(top_i[0].item())
-        y_true.append(label)
 
     predicted = np.array(predicted)
-    y_true = np.array(y_true)
 
-    ind, acc = cluster_acc(y_true, predicted)
-
-    d = {}
-    for i, j in ind:
-        d[i] = j
-
-    for i in range(x_test.shape[0]):  # we do this for each sample or sample batch
-        predicted[i] = d[predicted[i]]
-
-    return predicted, acc
+    return predicted
 
 
 def main():
@@ -170,22 +156,45 @@ def main():
         net.apply(weights_init)
         net.cuda()
 
-        prediction, acc = eval_training(net, training_set, x_test, y_test, l=l, _lr=_lr, k=k_value)
+        prediction = eval_training(net, training_set, x_test, l=l, _lr=_lr, k=k_value)
         predictions.append(prediction)
-        accuracies.append(acc)
 
     predictions = np.array(predictions)
+
+    # First, find uniform assignment to all predictions
+    for k in range(1, predictions.shape[0]):
+        ind, _ = cluster_acc(predictions[0][:], predictions[:][k])
+
+        d = {}
+        for i, j in ind:
+            d[i] = j
+
+        for i in range(x_test.shape[0]):
+            predictions[k][i] = d[predictions[k][i]]
+
     mode, counts = stats.mode(predictions, axis=0)
     mode = np.atleast_2d(mode) # Allows compatibility with SciPy versions >= 1.11, due to new default behaviour for stats.mode
     # print(mode)
-    print(accuracies)
+
+    predictions = [None] * len(y_test)
+
+    for i in range(len(y_test)):
+        predictions[i] = mode[0][i]
+
+    predictions = np.array(predictions)
+    
+    # Then, use the Hungarian method to find the optimal assignment between cluster labels and true labels
+    ind, acc = cluster_acc(y_test, predictions)
+
+    d = {i: j for i, j in ind}
+    pred_mapped = np.array([d[c] for c in predictions], dtype=np.int64)
 
     w = np.zeros((numClasses, numClasses), dtype=np.int64)
     for i in range(y_test.shape[0]):
-        w[y_test[i], mode[0][i]] += 1
+        w[y_test[i], pred_mapped[i]] += 1
 
         # Print "misclassified" sequences.
-        # if y_test[i] != mode[0][i]:
+        # if y_test[i] != pred_mapped[i]:
         #    print(i, y_test[i])
 
     print(w)

@@ -119,6 +119,8 @@ def main():
     parser.add_argument('--k', action='store', type=int, default=6)
     args = parser.parse_args()
 
+    print("Warning: This legacy evaluation script for DeLUCS uses ground-truth labels to align cluster IDs of neural networks before majority vote. This script exists for testing the original alignment method used in DeLUCS. The output does not reflect the actual clustering accuracy of an unsupervised DeLUCS run.")
+
     seed = args.seed
 
     if seed is not None:
