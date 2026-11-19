@@ -122,10 +122,21 @@ def transition_transversion(seq, threshold_1, threshold_2):
     :return:
     """
     # First transitions.
-    idx, mutations = transition(seq, threshold_1)
+    idx1, mutations1 = transition(seq, threshold_1)
     seq = list(seq)
     # Then transversions.
-    for (i, new_bp) in zip(idx, mutations):
+    for (i, new_bp) in zip(idx1, mutations1):
         seq[i] = new_bp
 
-    return transversion(''.join(seq), threshold_2)
+    idx2, mutations2 = transversion(
+        ''.join(seq), threshold_2
+    )
+
+    # Combine transitions and transversions.
+    combined = dict(zip(idx1, mutations1))
+    combined.update(zip(idx2, mutations2))
+
+    indices = np.array(sorted(combined.keys()), dtype=int)
+    mutations = [combined[i] for i in indices]
+
+    return indices, mutations
