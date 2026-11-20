@@ -8,13 +8,13 @@ from torch.autograd import Variable
 
 # -----------Creating the Class Dataset (Unsupervised) ------------------------
 class Seq_data(Dataset):
-    """New dataset using pairs of CGR"""
+    """New dataset using pairs of normalized k-mer counts"""
 
     def __init__(self, data):
         """
         Args:
-            data (numpy array): True CGR.
-            copy (numpy array): Modified CGR.
+            data (numpy array): True normalized k-mer count.
+            copy (numpy array): Modified normalized k-mer count.
         """
         self.data = data
 
@@ -36,7 +36,7 @@ class LabeledData(Dataset):
     def __init__(self, data, labels):
         """
         Args:
-            data (numpy array): CGR representation of each sequence.
+            data (numpy array): normalized k-mer count representation of each sequence.
             labels (numpy array): Subtypes of each sequence.
         """
         self.data = data

@@ -30,7 +30,7 @@ def eval_training(net, training_set, x_test, y_test, l=1.0, _lr=0.0001, k=6):
     :param x_test: features of the new sequences to be tested
     :param y_test: "ground truth" of the sequences-optional.
     :param net: Network to be trained
-    :param training_set: Dataset with pairs of CGRs of the form (original, mimic)
+    :param training_set: Dataset with pairs of normalized k-mer counts of the form (original, mimic)
     :param l: hyperparameter to favor conditional entropy
     :param _lr: Learning Rate
     :param k: word length in k-mer counts.

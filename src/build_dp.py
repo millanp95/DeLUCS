@@ -4,8 +4,9 @@ format from a folder with FASTA files. The
 desired label of the file must be in the file ID
 after the accession number separated by a dot.
 
-:param dataset: Name of the Dataset.
 :param data_path: Path of the folder with the sequences.
+:param output_dir: Path of the folder in which to save dataset of sequences. Will default to data_path.
+:param output_file: Name of the file which to save dataset of sequences. Will default to 'train.p'.
 :returns: None
 
 Example: python build_dp.py --data_path = '../data/Influenza'

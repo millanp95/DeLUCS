@@ -28,7 +28,7 @@ def weights_init(m):
 def training(net, training_set, l=1.0, _lr=0.0001, k=6):
     """
     :param net: Network to be trained
-    :param training_set: Dataset with pairs of CGRs of the form (original, mimic)
+    :param training_set: Dataset with pairs of normalized k-mer counts of the form (original, mimic)
     :param l: Hyperparameter to favor conditional entropy
     :param _lr: Learning Rate
     :param k: word length in k-mer counts.
