@@ -8,13 +8,13 @@ from torch.autograd import Variable
 
 # -----------Creating the Class Dataset (Unsupervised) ------------------------
 class Seq_data(Dataset):
-    """New dataset using pairs of CGR"""
+    """New dataset using pairs of normalized k-mer counts"""
 
     def __init__(self, data):
         """
         Args:
-            data (numpy array): True CGR.
-            copy (numpy array): Modified CGR.
+            data (numpy array): True normalized k-mer count.
+            copy (numpy array): Modified normalized k-mer count.
         """
         self.data = data
 
@@ -25,8 +25,7 @@ class Seq_data(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
         
-        #sample = {'true': self.data[idx, 0, :], 'modified': self.data[idx, 1, :]} 
-        sample = {'true': self.data[idx, 0, :], 'modified': self.data[idx, 0, :]}  #<--- We can enforce the prediction of same vector
+        sample = {'true': self.data[idx, 0, :], 'modified': self.data[idx, 1, :]} 
         return sample
 
 
@@ -37,7 +36,7 @@ class LabeledData(Dataset):
     def __init__(self, data, labels):
         """
         Args:
-            data (numpy array): CGR representation of each sequence.
+            data (numpy array): normalized k-mer count representation of each sequence.
             labels (numpy array): Subtypes of each sequence.
         """
         self.data = data
@@ -89,6 +88,7 @@ class Net(nn.Module):
 class Net_linear(nn.Module):
     def __init__(self, n_input, n_output):
         super(Net_linear, self).__init__()
+        self.n_input = n_input
         self.classifier = nn.Sequential(
             nn.Linear(n_input, 512),
             nn.ReLU(),
@@ -101,7 +101,7 @@ class Net_linear(nn.Module):
         )
 
     def forward(self, x):
-        x = x.view(-1, 4096)
+        x = x.view(-1, self.n_input)
         out = self.classifier(x)
         return out
 

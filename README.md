@@ -1,5 +1,5 @@
 # DeLUCS
-This repository contains all the source files required to reproduce the results in the original DeLUCS paper (https://doi.org/10.1101/2021.05.13.444008), as well as a detailed guide for running the code.
+This repository contains all the source files required to reproduce the results in the original DeLUCS paper (https://doi.org/10.1101/2021.05.13.444008), as well as a detailed guide for running the code. 
 
 <!--
 <p align="center">
@@ -11,37 +11,78 @@ This repository contains all the source files required to reproduce the results 
 
 
 ### 1. Build the dataset:
-  ```
-  	python build_dp.py --data_path=<PATH_sequence_folder>	
-  ```
- * Input: Folders with the sequences in FASTA format
- * Output : file in the form (label,sequence,accession)
+```
+python build_dp.py --data_path=<PATH_sequence_folder>	
+```
+* Input: Folders with the sequences in FASTA format
+* Output : file in the form (label,sequence,accession)
 
 
 ### 2. Compute the mimic sequences.
 
-  ```
-	python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file> --n_mimics=<n mimics per sequence>
-  ```
+```
+python get_pairs.py --data_path=<PATH_pickle_dataset> --k=6 --modify='mutation' --output=<PATH_output_file> --n_mimics=<n mimics per sequence>
+```
 * Input: file in the form (label,sequence,accession)
 * Output : file in the form of (pairs, x_test, y_test)
   
 ### 3. Train the model.
-	* For training DeLUCS and testing its performance
-		```
-		python EvaluateDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
-		```
+For training DeLUCS and testing its performance when ground truth labels are available:
 
-		* Input: Pickle file with the mimics in the form of (pairs, x_test, y_test). 
-		* Output : Confusion Matrix. 
-				<!--* File with the misclassified sequences in the form (accession, true_label, predicted_label)-->
+```
+python EvaluateDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPUTDIR>
+```
 
-	* For testing the performance  a single Neural Network trained in an unsupervised way (labels must be available):
-		```
-		python EvaluateSingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPURDIR>
-		```
+* Input: Pickle file with the mimics in the form of (pairs, x_test, y_test). 
+* Output : Confusion Matrix. 
+
+For testing the performance of a single Neural Network trained in an unsupervised way (labels must be available):
+		
+```
+python EvaluateSingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPUTDIR>
+```
+
+* Input: Pickle file with the mimics in the form of (pairs, x_test, y_test). 
+* Output : Confusion Matrix. 
+
+
 ## Training on your own data
-We recomend using the updated version of the code in (https://github.com/Kari-Genomics-Lab) for training on your own data. 
+Use the above steps 1 and 2. At the stage of model training, instead use the deployment scripts.
+
+For training DeLUCS and saving its predictions when labels are not available:
+
+```
+python TrainDeLUCS.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPUTDIR> --n_clusters=<number of clusters>
+```
+
+* Input: Pickle file with the mimics in the form of (pairs, x_test, y_test). 
+* Output : Pickle file containing predicted cluster ID for each sequence in the form of (accession, predicted cluster ID).
+
+For testing the performance of a single Neural Network:
+```
+python SingleRun.py --data_dir=<PATH_of_computed_mimics> --out_dir=<OUTPUTDIR> --n_clusters=<number of clusters>
+```
+
+* Input: Pickle file with the mimics in the form of (pairs, x_test, y_test). 
+* Output : Pickle file containing predicted cluster ID for each sequence in the form of (accession, predicted cluster ID). 
+
+
+## Additional options
+
+The above-mentioned scripts support the following optional arguments for configuring dataset generation, training, and evaluation:
+
+- **`build_dp.py`**: `--output_dir` and `--output_file` specify where the dataset is saved. By default, `--output_file` is set to `train.p`, which is saved in the input sequence directory.
+
+- **`get_pairs.py`**: `--modify` accepts `mutation`, `noise`, or `duplication` (with the latter creating original/original pairs). '--n_mimics` controls the number of pairs generated per sequence (minimum 3 for `mutation`, 1 otherwise). `--k` specifies the k-mer length (default 6), and `--seed` optionally sets the random seed.
+
+- **`EvaluateDeLUCS.py` and `EvaluateSingleRun.py`**: `--input_file` specifies the input pickle filename (default `testing_data.p`), `--k` specifies the k-mer length, and `--seed` optionally sets the random seed. `--out_dir` specifies where to save the confusion matrix; if omitted, the plot is not saved.
+
+- **`TrainDeLUCS.py` and `SingleRun.py`**: In addition to the input, k-mer, and seed options, `--n_clusters` specifies the number of clusters. `--output_file` sets the prediction filename (default `predictions.p`), while `--out_dir` sets its directory (default: current working directory). Existing prediction files are prevented from being overwritten unless `--overwrite` is specified.
+
+For backward compatibility with the original evaluation method, `EvaluateDeLUCS_legacy_alignment.py` preserves the original use of ground-truth labels to align cluster IDs of voters before majority voting. This method is provided for legacy comparison and should not be interpreted as an independent unsupervised evaluation.
+
+See `Example.ipynb` for an example workflow.
+
 
 ## Citation 
 

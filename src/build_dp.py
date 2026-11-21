@@ -4,8 +4,9 @@ format from a folder with FASTA files. The
 desired label of the file must be in the file ID
 after the accession number separated by a dot.
 
-:param dataset: Name of the Dataset.
 :param data_path: Path of the folder with the sequences.
+:param output_dir: Path of the folder in which to save dataset of sequences. Will default to data_path.
+:param output_file: Name of the file which to save dataset of sequences. Will default to 'train.p'.
 :returns: None
 
 Example: python build_dp.py --data_path = '../data/Influenza'
@@ -35,7 +36,9 @@ def replace(seq):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_path', action='store', type=str, default='None')
+    parser.add_argument('--data_path', action='store', type=str, default=None)
+    parser.add_argument('--output_dir', action='store', type=str, default=None)
+    parser.add_argument('--output_file', action='store', type=str, default='train.p')
     args = parser.parse_args()
 
     seq_dir = args.data_path
@@ -61,7 +64,12 @@ def main():
 
                 data.append((label, seq, accession_number))
 
-    pathTrain = os.path.join(seq_dir, 'train.p')
+    output_dir = args.output_dir
+
+    if output_dir is None:
+        output_dir = seq_dir
+
+    pathTrain = os.path.join(output_dir, args.output_file)
     pickle.dump(data, open(pathTrain, "wb"))
 
 
